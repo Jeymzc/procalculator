@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ultimate Premium Calculator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(circle at top left, #2563eb, transparent 35%),
+        radial-gradient(circle at bottom right, #7c3aed, transparent 35%),
+        #080b14;
+    color: white;
+}
+
+/* APP */
+
+.app {
+    width: 1000px;
+    max-width: 95%;
+    min-height: 620px;
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 30px 100px rgba(0,0,0,.5);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    padding: 25px;
+    border-right: 1px solid rgba(255,255,255,.1);
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.logo span {
+    color: #60a5fa;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu button {
+    height: 45px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: white;
+    text-align: left;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.menu button:hover,
+.menu button.active {
+    background: #2563eb;
+}
+
+/* CONTENT */
+
+.content {
+    padding: 30px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.topbar h1 {
+    font-size: 25px;
+}
+
+/* DISPLAY */
+
+.display {
+    width: 100%;
+    height: 100px;
+    border: none;
+    border-radius: 18px;
+    background: rgba(0,0,0,.35);
+    color: white;
+    font-size: 38px;
+    text-align: right;
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+/* SCIENTIFIC */
+
+.scientific {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+.scientific button {
+    height: 40px;
+    border: none;
+    border-radius: 9px;
+    background: rgba(124,58,237,.35);
+    color: white;
+    cursor: pointer;
+}
+
+/* CALCULATOR BUTTONS */
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 9px;
+}
+
+.buttons button {
+    height: 58px;
+    border: none;
+    border-radius: 14px;
+    background: rgba(255,255,255,.1);
+    color: white;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background: rgba(255,255,255,.2);
+}
+
+.operator {
+    background: #2563eb !important;
+}
+
+.clear {
+    background: #dc2626 !important;
+}
+
+.equal {
+    grid-column: span 2;
+    background: #16a34a !important;
+}
+
+/* PANELS */
+
+.panel {
+    display: none;
+}
+
+.panel.active {
+    display: block;
+}
+
+/* CONVERTER */
+
+.converter {
+    display: grid;
+    gap: 15px;
+}
+
+.converter input,
+.converter select {
+    width: 100%;
+    height: 55px;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.converter button {
+    height: 55px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.result {
+    padding: 25px;
+    background: rgba(255,255,255,.1);
+    border-radius: 15px;
+    text-align: center;
+    font-size: 25px;
+}
+
+/* OVERLAY */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* POPUP */
+
+.popup {
+    width: 430px;
+    max-width: 92%;
+    padding: 35px;
+    text-align: center;
+    background: white;
+    color: #111827;
+    border-radius: 25px;
+    animation: pop .25s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.lock {
+    font-size: 50px;
+}
+
+.popup h2 {
+    margin: 10px 0;
+}
+
+.popup p {
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.price {
+    font-size: 40px;
+    font-weight: bold;
+    color: #2563eb;
+    margin: 20px 0;
+}
+
+.price small {
+    display: block;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.subscribe {
+    width: 100%;
+    height: 55px;
+    border: none;
+    border-radius: 13px;
+    background: #2563eb;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 12px;
+    background: #e5e7eb;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* PAYMENT BOX */
+
+.payment-box {
+    width: 450px;
+    max-width: 92%;
+    padding: 30px;
+    background: white;
+    color: #111827;
+    border-radius: 25px;
+    animation: pop .25s ease;
+}
+
+/* PAYMENT TOP */
+
+.payment-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.back-button {
+    border: none;
+    background: #f3f4f6;
+    color: #374151;
+    padding: 9px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.back-button:hover {
+    background: #e5e7eb;
+}
+
+.payment-box h2 {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.payment-description {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.payment-price {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #2563eb;
+    margin: 20px 0;
+}
+
+/* PAYMENT METHOD */
+
+.payment-method {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #111827;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    cursor: pointer;
+    text-align: left;
+    transition: .2s;
+}
+
+.payment-method:hover {
+    border-color: #2563eb;
+    background: #f8fafc;
+    transform: translateY(-2px);
+}
+
+.payment-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eef2ff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.payment-info {
+    flex: 1;
+}
+
+.payment-info strong {
+    display: block;
+    font-size: 15px;
+}
+
+.payment-info small {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.arrow {
+    font-size: 22px;
+    color: #9ca3af;
+}
+
+.secure {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+/* MOBILE */
+
+@media(max-width:750px) {
+
+    .app {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .scientific {
+        grid-template-columns: repeat(4,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            🧮 <span>ULTIMATE</span>
+        </div>
+
+        <div class="menu">
+
+            <button
+                class="active"
+                onclick="showPanel('calculator', this)">
+                🧮 Calculator
+            </button>
+
+            <button
+                onclick="showPanel('currency', this)">
+                💰 Currency
+            </button>
+
+            <button
+                onclick="showPanel('units', this)">
+                📏 Units
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+        <!-- CALCULATOR -->
+
+        <div
+            id="calculator"
+            class="panel active">
+
+            <div class="topbar">
+                <h1>Premium Calculator</h1>
+            </div>
+
+            <input
+                id="display"
+                class="display"
+                value="0"
+                readonly>
+
+
+            <!-- SCIENTIFIC -->
+
+            <div class="scientific">
+
+                <button onclick="scientific('sin')">
+                    sin
+                </button>
+
+                <button onclick="scientific('cos')">
+                    cos
+                </button>
+
+                <button onclick="scientific('tan')">
+                    tan
+                </button>
+
+                <button onclick="scientific('sqrt')">
+                    √
+                </button>
+
+                <button onclick="scientific('square')">
+                    x²
+                </button>
+
+                <button onclick="addNumber('Math.PI')">
+                    π
+                </button>
+
+                <button onclick="scientific('log')">
+                    log
+                </button>
+
+                <button onclick="scientific('ln')">
+                    ln
+                </button>
+
+                <button onclick="scientific('exp')">
+                    eˣ
+                </button>
+
+                <button onclick="scientific('inverse')">
+                    1/x
+                </button>
+
+                <button onclick="scientific('factorial')">
+                    n!
+                </button>
+
+                <button onclick="scientific('abs')">
+                    |x|
+                </button>
+
+            </div>
+
+
+            <!-- BASIC -->
+
+            <div class="buttons">
+
+                <button
+                    class="clear"
+                    onclick="clearDisplay()">
+                    AC
+                </button>
+
+                <button onclick="deleteLast()">
+                    ⌫
+                </button>
+
+                <button onclick="percent()">
+                    %
+                </button>
+
+                <button
+                    class="operator"
+                    onclick="addOperator('/')">
+                    ÷
+                </button>
+
+
+                <button onclick="addNumber('7')">
+                    7
+                </button>
+
+                <button onclick="addNumber('8')">
+                    8
+                </button>
+
+                <button onclick="addNumber('9')">
+                    9
+                </button>
+
+                <button
+                    class="operator"
+                    onclick="addOperator('*')">
+                    ×
+                </button>
+
+
+                <button onclick="addNumber('4')">
+                    4
+                </button>
+
+                <button onclick="addNumber('5')">
+                    5
+                </button>
+
+                <button onclick="addNumber('6')">
+                    6
+                </button>
+
+                <button
+                    class="operator"
+                    onclick="addOperator('-')">
+                    −
+                </button>
+
+
+                <button onclick="addNumber('1')">
+                    1
+                </button>
+
+                <button onclick="addNumber('2')">
+                    2
+                </button>
+
+                <button onclick="addNumber('3')">
+                    3
+                </button>
+
+                <button
+                    class="operator"
+                    onclick="addOperator('+')">
+                    +
+                </button>
+
+
+                <button onclick="addNumber('0')">
+                    0
+                </button>
+
+                <button onclick="addNumber('.')">
+                    .
+                </button>
+
+                <button
+                    class="equal"
+                    onclick="showSubscription()">
+                    =
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- CURRENCY -->
+
+        <div
+            id="currency"
+            class="panel">
+
+            <div class="topbar">
+                <h1>💰 Currency Converter</h1>
+            </div>
+
+            <div class="converter">
+
+                <input
+                    id="currencyAmount"
+                    placeholder="Enter amount">
+
+                <select id="currencyFrom">
+
+                    <option value="USD">
+                        USD - US Dollar
+                    </option>
+
+                    <option value="PHP">
+                        PHP - Philippine Peso
+                    </option>
+
+                    <option value="EUR">
+                        EUR - Euro
+                    </option>
+
+                    <option value="JPY">
+                        JPY - Japanese Yen
+                    </option>
+
+                </select>
+
+                <select id="currencyTo">
+
+                    <option value="PHP">
+                        PHP - Philippine Peso
+                    </option>
+
+                    <option value="USD">
+                        USD - US Dollar
+                    </option>
+
+                    <option value="EUR">
+                        EUR - Euro
+                    </option>
+
+                    <option value="JPY">
+                        JPY - Japanese Yen
+                    </option>
+
+                </select>
+
+                <button onclick="convertCurrency()">
+                    💱 Convert
+                </button>
+
+                <div
+                    id="currencyResult"
+                    class="result">
+                    Result
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- UNITS -->
+
+        <div
+            id="units"
+            class="panel">
+
+            <div class="topbar">
+                <h1>📏 Unit Converter</h1>
+            </div>
+
+            <div class="converter">
+
+                <input
+                    id="unitValue"
+                    type="number"
+                    placeholder="Enter value">
+
+                <select id="unitType">
+
+                    <option value="km">
+                        Kilometers → Miles
+                    </option>
+
+                    <option value="miles">
+                        Miles → Kilometers
+                    </option>
+
+                    <option value="kg">
+                        Kilograms → Pounds
+                    </option>
+
+                    <option value="lbs">
+                        Pounds → Kilograms
+                    </option>
+
+                    <option value="c">
+                        Celsius → Fahrenheit
+                    </option>
+
+                    <option value="f">
+                        Fahrenheit → Celsius
+                    </option>
+
+                </select>
+
+                <button onclick="convertUnit()">
+                    Convert
+                </button>
+
+                <div
+                    id="unitResult"
+                    class="result">
+                    Result
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================
+     PREMIUM POPUP
+========================== -->
+
+<div
+    id="subscribePopup"
+    class="overlay">
+
+    <div class="popup">
+
+        <div class="lock">
+            🔒
+        </div>
+
+        <h2>
+            Premium Required
+        </h2>
+
+        <p>
+            Subscribe to unlock
+            the calculator result.
+        </p>
+
+        <div class="price">
+            $1,000,000
+            <small>per month</small>
+        </div>
+
+        <button
+            class="subscribe"
+            onclick="openPaymentMethods()">
+
+            💳 Subscribe Now
+
+        </button>
+
+        <button
+            class="close"
+            onclick="closePopup()">
+
+            Maybe Later
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================
+     PAYMENT METHODS
+========================== -->
+
+<div
+    id="paymentPopup"
+    class="overlay">
+
+    <div class="payment-box">
+
+
+        <!-- BACK BUTTON -->
+
+        <div class="payment-top">
+
+            <button
+                class="back-button"
+                onclick="backToSubscription()">
+
+                ← Back
+
+            </button>
+
+        </div>
+
+
+        <h2>
+            Choose Payment Method
+        </h2>
+
+        <p class="payment-description">
+            Select your preferred payment method.
+        </p>
+
+        <div class="payment-price">
+            $1,000,000
+        </div>
+
+
+        <!-- GCASH -->
+
+        <button
+            class="payment-method"
+            onclick="payWithMayaCheckout('GCash')">
+
+            <div class="payment-logo">
+                G
+            </div>
+
+            <div class="payment-info">
+
+                <strong>
+                    GCash
+                </strong>
+
+                <small>
+                    Continue to secure checkout
+                </small>
+
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+        </button>
+
+
+        <!-- MAYA -->
+
+        <button
+            class="payment-method"
+            onclick="payWithMayaCheckout('Maya')">
+
+            <div class="payment-logo">
+                M
+            </div>
+
+            <div class="payment-info">
+
+                <strong>
+                    Maya
+                </strong>
+
+                <small>
+                    Continue to secure checkout
+                </small>
+
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+        </button>
+
+
+        <!-- CARD -->
+
+        <button
+            class="payment-method"
+            onclick="payWithMayaCheckout('Card')">
+
+            <div class="payment-logo">
+                💳
+            </div>
+
+            <div class="payment-info">
+
+                <strong>
+                    Credit / Debit Card
+                </strong>
+
+                <small>
+                    Continue to secure checkout
+                </small>
+
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+        </button>
+
+
+        <div class="secure">
+            🔒 Secure payment via payment gateway
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ==========================
+   CALCULATOR
+========================== */
+
+let expression = "";
+
+const display =
+    document.getElementById("display");
+
+
+function addNumber(value) {
+
+    if (
+        expression === "0" ||
+        expression === ""
+    ) {
+        expression = "";
+    }
+
+    expression += value;
+
+    display.value = expression;
+}
+
+
+function addOperator(operator) {
+
+    if (!expression) return;
+
+    const last =
+        expression.slice(-1);
+
+    if ("+-*/".includes(last)) {
+
+        expression =
+            expression.slice(0,-1);
+
+    }
+
+    expression += operator;
+
+    display.value = expression;
+}
+
+
+function clearDisplay() {
+
+    expression = "";
+
+    display.value = "0";
+}
+
+
+function deleteLast() {
+
+    expression =
+        expression.slice(0,-1);
+
+    display.value =
+        expression || "0";
+}
+
+
+function percent() {
+
+    try {
+
+        expression =
+            String(
+                eval(expression) / 100
+            );
+
+        display.value = expression;
+
+    } catch {
+
+        display.value = "Error";
+
+    }
+}
+
+
+/* ==========================
+   SCIENTIFIC
+========================== */
+
+function scientific(type) {
+
+    try {
+
+        let value =
+            eval(expression);
+
+        switch(type) {
+
+            case "sin":
+                value =
+                    Math.sin(
+                        value *
+                        Math.PI / 180
+                    );
+                break;
+
+            case "cos":
+                value =
+                    Math.cos(
+                        value *
+                        Math.PI / 180
+                    );
+                break;
+
+            case "tan":
+                value =
+                    Math.tan(
+                        value *
+                        Math.PI / 180
+                    );
+                break;
+
+            case "sqrt":
+                value =
+                    Math.sqrt(value);
+                break;
+
+            case "square":
+                value =
+                    value * value;
+                break;
+
+            case "log":
+                value =
+                    Math.log10(value);
+                break;
+
+            case "ln":
+                value =
+                    Math.log(value);
+                break;
+
+            case "exp":
+                value =
+                    Math.exp(value);
+                break;
+
+            case "inverse":
+                value =
+                    1 / value;
+                break;
+
+            case "abs":
+                value =
+                    Math.abs(value);
+                break;
+
+            case "factorial":
+
+                let n =
+                    eval(expression);
+
+                value = 1;
+
+                for (
+                    let i = 2;
+                    i <= n;
+                    i++
+                ) {
+
+                    value *= i;
+
+                }
+
+                break;
+
+        }
+
+        expression =
+            String(value);
+
+        display.value =
+            expression;
+
+    } catch {
+
+        display.value =
+            "Error";
+
+    }
+}
+
+
+/* ==========================
+   PREMIUM POPUP
+========================== */
+
+function showSubscription() {
+
+    if (!expression) return;
+
+    document
+        .getElementById("subscribePopup")
+        .style.display = "flex";
+}
+
+
+function closePopup() {
+
+    document
+        .getElementById("subscribePopup")
+        .style.display = "none";
+}
+
+
+/* ==========================
+   PAYMENT POPUP
+========================== */
+
+function openPaymentMethods() {
+
+    closePopup();
+
+    document
+        .getElementById("paymentPopup")
+        .style.display = "flex";
+}
+
+
+/* ==========================
+   BACK BUTTON
+========================== */
+
+function backToSubscription() {
+
+    document
+        .getElementById("paymentPopup")
+        .style.display = "none";
+
+    document
+        .getElementById("subscribePopup")
+        .style.display = "flex";
+}
+
+
+/* ==========================
+   MAYA CHECKOUT
+========================== */
+
+async function payWithMayaCheckout(method) {
+
+    /*
+        IMPORTANT:
+
+        This URL should point to your
+        secure backend.
+
+        Example:
+
+        /api/create-checkout
+
+        The backend creates the actual
+        Maya Checkout session and returns
+        the official redirectUrl.
+    */
+
+    const BACKEND_URL =
+        "/api/create-checkout";
+
+
+    try {
+
+        const response =
+            await fetch(
+                BACKEND_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        amount: 1000000,
+
+                        currency: "USD",
+
+                        paymentMethod: method
+
+                    })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Payment server error"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (data.redirectUrl) {
+
+            window.location.href =
+                data.redirectUrl;
+
+        } else {
+
+            alert(
+                "Checkout URL was not received."
+            );
+
+        }
+
+    } catch(error) {
+
+        alert(
+            "Maya Checkout is not connected yet.\n\n" +
+            "Connect this page to your secure payment backend."
+        );
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* ==========================
+   CURRENCY FORMAT
+========================== */
+
+document
+    .getElementById("currencyAmount")
+    .addEventListener(
+        "input",
+        function() {
+
+            let value =
+                this.value
+                .replace(/,/g,"");
+
+            if (!value) return;
+
+            let parts =
+                value.split(".");
+
+            let whole =
+                parts[0]
+                .replace(/\D/g,"");
+
+            let decimal =
+                parts[1];
+
+            whole =
+                Number(whole)
+                .toLocaleString("en-US");
+
+            this.value =
+                decimal !== undefined
+                ? whole + "." + decimal
+                : whole;
+
+        }
+    );
+
+
+/* ==========================
+   CURRENCY CONVERTER
+========================== */
+
+function convertCurrency() {
+
+    let amount =
+        Number(
+            document
+            .getElementById("currencyAmount")
+            .value
+            .replace(/,/g,"")
+        );
+
+    let from =
+        document
+        .getElementById("currencyFrom")
+        .value;
+
+    let to =
+        document
+        .getElementById("currencyTo")
+        .value;
+
+
+    if (!amount) {
+
+        document
+            .getElementById("currencyResult")
+            .textContent =
+            "Enter a valid amount.";
+
+        return;
+    }
+
+
+    const rates = {
+
+        USD: 1,
+        PHP: 58,
+        EUR: 0.86,
+        JPY: 149
+
+    };
+
+
+    let result =
+        amount /
+        rates[from] *
+        rates[to];
+
+
+    document
+        .getElementById("currencyResult")
+        .textContent =
+        result.toLocaleString(
+            "en-US",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )
+        + " "
+        + to;
+}
+
+
+/* ==========================
+   UNIT CONVERTER
+========================== */
+
+function convertUnit() {
+
+    let value =
+        Number(
+            document
+            .getElementById("unitValue")
+            .value
+        );
+
+    let type =
+        document
+        .getElementById("unitType")
+        .value;
+
+    let result;
+
+
+    switch(type) {
+
+        case "km":
+            result =
+                value * 0.621371;
+            break;
+
+        case "miles":
+            result =
+                value * 1.60934;
+            break;
+
+        case "kg":
+            result =
+                value * 2.20462;
+            break;
+
+        case "lbs":
+            result =
+                value * 0.453592;
+            break;
+
+        case "c":
+            result =
+                value * 9 / 5 + 32;
+            break;
+
+        case "f":
+            result =
+                (value - 32) * 5 / 9;
+            break;
+
+    }
+
+
+    document
+        .getElementById("unitResult")
+        .textContent =
+        result.toLocaleString(
+            "en-US",
+            {
+                maximumFractionDigits: 4
+            }
+        );
+}
+
+
+/* ==========================
+   PANEL NAVIGATION
+========================== */
+
+function showPanel(
+    panel,
+    button
+) {
+
+    document
+        .querySelectorAll(".panel")
+        .forEach(
+            p =>
+            p.classList.remove("active")
+        );
+
+
+    document
+        .getElementById(panel)
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll(".menu button")
+        .forEach(
+            b =>
+            b.classList.remove("active")
+        );
+
+
+    button.classList.add("active");
+}
+
+
+/* ==========================
+   KEYBOARD
+========================== */
+
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (
+            e.key >= "0" &&
+            e.key <= "9"
+        ) {
+
+            addNumber(e.key);
+
+        }
+
+        else if (
+            "+-*/".includes(e.key)
+        ) {
+
+            addOperator(e.key);
+
+        }
+
+        else if (e.key === ".") {
+
+            addNumber(".");
+
+        }
+
+        else if (
+            e.key === "Backspace"
+        ) {
+
+            deleteLast();
+
+        }
+
+        else if (
+            e.key === "Enter" ||
+            e.key === "="
+        ) {
+
+            showSubscription();
+
+        }
+
+        else if (e.key === "Escape") {
+
+            document
+                .querySelectorAll(".overlay")
+                .forEach(
+                    x =>
+                    x.style.display = "none"
+                );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
